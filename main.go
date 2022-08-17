@@ -30,6 +30,7 @@ func main() {
 		conference := superGroup.Group("/conference")
 		{
 			conference.GET("/", controllers.GetConferences)
+			conference.POST("/buy-ticket/:conference_id", controllers.CreateCustomUser)
 		}
 	}
 

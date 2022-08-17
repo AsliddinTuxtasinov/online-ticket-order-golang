@@ -7,7 +7,7 @@ type AdminUserSignUp struct {
 	Password  string `json:"password"`
 	Password2 string `json:"password2"`
 	FirstName string `json:"first_name"`
-	LirstName string `json:"last_name"`
+	LastName  string `json:"last_name"`
 }
 
 func CreateSuperUser(first_name, last_name, email, password string) *models.User {

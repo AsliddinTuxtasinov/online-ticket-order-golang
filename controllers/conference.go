@@ -6,26 +6,20 @@ import (
 	"github.com/AsliddinTuxtasinov/online-ticket-order/initializers"
 	"github.com/AsliddinTuxtasinov/online-ticket-order/models"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func GetConferences(c *gin.Context) {
 	var conferences []*models.Conference
-	// var workouts []Workout
-	// db.Preload("Exercises").Find(&workouts)
 
-	if tx := initializers.DB.Find(&conferences); tx.Error != nil {
+	if tx := initializers.DB.Preload("CustomUsers", func(db *gorm.DB) *gorm.DB {
+		return db.Order("custom_users.id DESC")
+	}).Find(&conferences); tx.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": tx.Error,
 		})
 		return
 	}
-	// if tx := initializers.DB.Preload("CustomUser").Find(&conferences); tx.Error != nil {
-	// if tx := initializers.DB.Preload("CustomUser").Find(&conferences); tx.Error != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{
-	// 		"error": tx.Error,
-	// 	})
-	// 	return
-	// }
 
 	c.JSON(http.StatusOK, gin.H{
 		"conferences": conferences,

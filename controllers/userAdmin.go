@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -37,7 +39,7 @@ func AddAdminUser(c *gin.Context) {
 		return
 	}
 	// Create the user
-	adminUser := utility.CreateSuperUser(body.FirstName, body.LirstName, body.Email, string(hash))
+	adminUser := utility.CreateSuperUser(body.FirstName, body.LastName, body.Email, string(hash))
 	tx := initializers.DB.Create(adminUser)
 	if tx.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -47,6 +49,43 @@ func AddAdminUser(c *gin.Context) {
 	}
 	// Respond
 	c.JSON(http.StatusCreated, gin.H{"message": "Created Admin User"})
+}
+
+func CreateSuperUser() {
+	var (
+		email, password, password2, firstName, lastName string
+	)
+	fmt.Println("Create Super User !")
+	fmt.Printf("enter email >>")
+	fmt.Scanf("%v\n", &email)
+
+	fmt.Printf("enter firstName >>")
+	fmt.Scanf("%v\n", &firstName)
+
+	fmt.Printf("enter lastName >>")
+	fmt.Scanf("%v\n", &lastName)
+
+	fmt.Printf("enter password >>")
+	fmt.Scanf("%v\n", &password)
+
+	fmt.Printf("enter password2 >>")
+	fmt.Scanf("%v\n", &password2)
+
+	if password != password2 {
+		log.Fatalln("passwords are not equal each other")
+	}
+
+	// Hash the password
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), 10)
+	if err != nil {
+		log.Fatalln("Faild to hash password")
+	}
+	// Create the user
+	adminUser := utility.CreateSuperUser(firstName, lastName, email, string(hash))
+	tx := initializers.DB.Create(adminUser)
+	if tx.Error != nil {
+		log.Fatalln("Faild to create user")
+	}
 }
 
 func Login(c *gin.Context) {
@@ -93,7 +132,7 @@ func Login(c *gin.Context) {
 	c.SetCookie("Authorization", tokenString, 3600*3, "", "", false, true)
 
 	// c.JSON(http.StatusOK, gin.H{"token": tokenString})
-	c.JSON(http.StatusOK, gin.H{})
+	c.JSON(http.StatusOK, gin.H{"message":"login in"})
 }
 
 func GetUser(c *gin.Context) {
