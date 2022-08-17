@@ -46,14 +46,15 @@ func CreateCustomUser(c *gin.Context) {
 		Update("TicketsCount", conference.TicketsCount-customUser.UserTickets).
 		Association("CustomUsers").Append(&customUser)
 
-	err := initializers.DB.Model(&customUser).
-		Joins("RIGHT JOIN conferences ON conferences.id = custom_users.conference_id").Select("conferences.name").Error
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": err})
+	// tx := initializers.DB.Joins("JOIN conferences ON conferences.id = custom_users.conference_id").Model(&customUser)
+	tx := initializers.DB.Model(&customUser).
+		Joins("JOIN conferences ON conferences.id = custom_users.conference_id").Select("conferences.name")
+	if tx.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": tx.Error})
 		return
 	}
 	// Return it
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"data": customUser,
 	})
 }
