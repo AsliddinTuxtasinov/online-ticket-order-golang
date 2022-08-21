@@ -20,7 +20,7 @@ type Conference struct {
 	Name          string
 	TicketsCount  uint
 	ScheduledTime time.Time
-	CustomUsers   []*CustomUser `gorm:"foreignKey:ConferenceId"`
+	CustomUsers   []*CustomUser `gorm:"foreignKey:ConferenceId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 type CustomUser struct {

@@ -31,6 +31,7 @@ func main() {
 		{
 			conference.GET("/", controllers.GetConferences)
 			conference.POST("/buy-ticket/:conference_id", controllers.CreateCustomUser)
+			conference.Any("/:id", controllers.Conference)
 		}
 	}
 
