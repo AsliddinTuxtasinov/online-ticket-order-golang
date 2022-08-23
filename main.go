@@ -33,6 +33,8 @@ func main() {
 			conference.POST("/buy-ticket/:conference_id", controllers.CreateCustomUser)
 			conference.Any("/:id", controllers.Conference)
 		}
+
+		superGroup.POST("/subscribe", controllers.SubscribeUser)
 	}
 
 	router.Run(":8080") // listen and serve on 0.0.0.0:8080
